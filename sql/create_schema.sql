@@ -3,12 +3,12 @@ GRANT usage ON *.* TO admin@localhost identified BY 'admin';
 CREATE DATABASE IF NOT EXISTS support;
 GRANT ALL privileges ON support.* TO admin@localhost;
 USE support;
-CREATE TABLE IF NOT EXISTS `omertex`.`Topic` (
+CREATE TABLE IF NOT EXISTS `support`.`Topic` (
   `topic_id` INT NOT NULL AUTO_INCREMENT,
   `topic_name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`topic_id`))
-ENGINE = InnoDB
-CREATE TABLE IF NOT EXISTS `omertex`.`Inquiry` (
+ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `support`.`Inquiry` (
   `inquiry_id` INT NOT NULL AUTO_INCREMENT,
   `description` VARCHAR(45) NOT NULL,
   `create_date` TIMESTAMP(0) NOT NULL DEFAULT Now(),
@@ -19,11 +19,11 @@ CREATE TABLE IF NOT EXISTS `omertex`.`Inquiry` (
   INDEX `fk_Inquiry_Topic_idx` (`topic_id` ASC),
   CONSTRAINT `fk_Inquiry_Topic`
     FOREIGN KEY (`topic_id`)
-    REFERENCES `omertex`.`Topic` (`topic_id`)
+    REFERENCES `support`.`Topic` (`topic_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
-CREATE TABLE IF NOT EXISTS `omertex`.`AttributeOfInquery` (
+ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `support`.`AttributeOfInquery` (
   `attributeOfInquery_id` INT NOT NULL,
   `attribute_name` VARCHAR(45) NOT NULL,
   `attribute_value` VARCHAR(45) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `omertex`.`AttributeOfInquery` (
   INDEX `fk_AttributeOfInquery_Inquiry1_idx` (`inquiry_id` ASC),
   CONSTRAINT `fk_AttributeOfInquery_Inquiry1`
     FOREIGN KEY (`inquiry_id`)
-    REFERENCES `omertex`.`Inquiry` (`inquiry_id`)
+    REFERENCES `support`.`Inquiry` (`inquiry_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB
+ENGINE = InnoDB;
