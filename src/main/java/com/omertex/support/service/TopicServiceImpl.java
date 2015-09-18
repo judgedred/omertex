@@ -1,5 +1,6 @@
 package com.omertex.support.service;
 
+import com.omertex.support.dao.DaoException;
 import com.omertex.support.dao.TopicDao;
 import com.omertex.support.domain.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,16 @@ public class TopicServiceImpl implements TopicService
 
     @Override
     @Transactional
-    public List<Topic> getTopicAll()
+    public List<Topic> getTopicAll() throws DaoException
     {
-        return topicDao.getTopicAll();
+        try
+        {
+            return topicDao.getTopicAll();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

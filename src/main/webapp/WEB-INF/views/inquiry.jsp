@@ -12,18 +12,41 @@
 <body>
 
 
-<h2>Topic list</h2>
+<h2>Add an inquiry</h2>
 
-<c:if test="${!empty topictList}">
-    <table class="data">
-        <c:forEach items="${topicList}" var="topic">
-            <tr>
-                <td>${topic.topicName}</td>
-                <td><a href="delete/${topic.topicId}">Удалить</a></td>
-            </tr>
-        </c:forEach>
+<form:form method="post" action="add" modelAttribute="inquiry">
+
+    <table>
+        <tr>
+            <td><form:label path="customerName">
+                Имя клиента
+            </form:label></td>
+            <td><form:input path="customerName" /></td>
+        </tr>
+        <tr>
+            <td><form:label path="topic">
+                Тема
+            </form:label></td>
+            <td><form:input path="topic" /></td>
+        </tr>
+        <tr>
+            <td><form:label path="createDate">
+                Дата создания
+            </form:label></td>
+            <td><form:input path="createDate" /></td>
+        </tr>
+        <tr>
+            <td><form:label path="description">
+                Описание
+            </form:label></td>
+            <td><form:input path="description" /></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="submit"
+                                   value="Добавить" /></td>
+        </tr>
     </table>
-</c:if>
+</form:form>
 
 </body>
 </html>
