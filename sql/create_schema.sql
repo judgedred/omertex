@@ -23,14 +23,14 @@ CREATE TABLE IF NOT EXISTS `support`.`Inquiry` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-CREATE TABLE IF NOT EXISTS `support`.`AttributeOfInquery` (
-  `attributeOfInquery_id` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `support`.`AttributeOfInquiry` (
+  `attributeOfInquiry_id` INT NOT NULL AUTO_INCREMENT,
   `attribute_name` VARCHAR(45) NOT NULL,
   `attribute_value` VARCHAR(45) NOT NULL,
   `inquiry_id` INT NOT NULL,
-  PRIMARY KEY (`attributeOfInquery_id`),
-  INDEX `fk_AttributeOfInquery_Inquiry1_idx` (`inquiry_id` ASC),
-  CONSTRAINT `fk_AttributeOfInquery_Inquiry1`
+  PRIMARY KEY (`attributeOfInquiry_id`),
+  INDEX `fk_AttributeOfInquiry_Inquiry1_idx` (`inquiry_id` ASC),
+  CONSTRAINT `fk_AttributeOfInquiry_Inquiry1`
     FOREIGN KEY (`inquiry_id`)
     REFERENCES `support`.`Inquiry` (`inquiry_id`)
     ON DELETE NO ACTION

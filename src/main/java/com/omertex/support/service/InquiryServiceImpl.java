@@ -23,24 +23,24 @@ public class InquiryServiceImpl implements InquiryService
     @Override
     public void update(Inquiry inquiry) throws DaoException
     {
-
+        inquiryDao.update(inquiry);
     }
 
     @Override
     public void delete(Inquiry inquiry) throws DaoException
     {
-
+        inquiryDao.delete(inquiry);
     }
 
     @Override
     public List<Inquiry> getInquiryAll() throws DaoException
     {
-        return null;
+        return inquiryDao.getInquiryAll();
     }
 
     @Override
     public Inquiry getInquiryById(int id) throws DaoException
     {
-        return null;
+        return inquiryDao.getInquiryById(id);
     }
 }

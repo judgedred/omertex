@@ -7,14 +7,14 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-    <title>Inquiry</title>
+    <title>InquiryUpdate</title>
 </head>
 <body>
 
 
-<h2>Add an inquiry</h2>
+<h2>Update an inquiry</h2>
 
-<form:form method="post" action="add" modelAttribute="inquiry">
+<form:form method="post" action="update" modelAttribute="inquiry">
 
     <table>
         <tr>
@@ -48,47 +48,26 @@
     </table>
 </form:form>
 
-<form:form method="post" action="addAttribute" modelAttribute="attribute">
+<form:form method="post" action="addAttribute" modelAttribute="form">
 
     <table>
+        <c:forEach items="${form.attributeOfInquiryMap}" var="attributeOfInquiryMap" varStatus="status">
         <tr>
-            <td><form:label path="attributeName">
-                Имя аттрибута
+            <td><form:label path="attributeOfInquiryMap['${attributeOfInquiryMap.key}']">
+                ${attributeOfInquiryMap.key}
             </form:label></td>
-            <td><form:input path="attributeName" /></td>
+            <td><form:input path="attributeOfInquiryMap['${attributeOfInquiryMap.key}']" /></td>
         </tr>
-        <tr>
-            <td><form:label path="attributeValue">
-                Значение
-            </form:label></td>
-            <td><form:input path="attributeValue" /></td>
-        </tr>
+            <%--<tr>
+                <td><form:label path="attributeOfInquiryMap['${attributeOfInquiryMap.value}']">
+                    ${attributeOfInquiryMap.value}
+                </form:label></td>
+                <td><form:input path="attributeOfInquiryMap['${attributeOfInquiryMap.value}']" /></td>
+            </tr>--%>
+        </c:forEach>
         <tr>
             <td colspan="2"><input type="submit"
                                    value="Добавить" /></td>
         </tr>
     </table>
 </form:form>
-
-<h3>Inquiries</h3>
-<c:if test="${!empty inquiryList}">
-    <table class="data">
-        <tr>
-            <th>Имя клиента</th>
-            <th>Описание</th>
-            <th>Дата создания</th>
-            <th>&nbsp;</th>
-        </tr>
-        <c:forEach items="${inquiryList}" var="inquiry">
-            <tr>
-                <td>${inquiry.customerName}</td>
-                <td>${inquiry.description}</td>
-                <td>${inquiry.createDate}</td>
-                <td><a href="update/${inquiry.inquiryId}">Изменить</a></td>
-                <td><a href="delete/${inquiry.inquiryId}">Удалить</a></td>
-            </tr>
-        </c:forEach>
-    </table>
-</c:if>
-</body>
-</html>

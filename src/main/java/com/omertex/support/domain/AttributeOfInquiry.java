@@ -1,6 +1,13 @@
 package com.omertex.support.domain;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "AttributeOfInquiry")
@@ -20,6 +27,7 @@ public class AttributeOfInquiry
     @ManyToOne
     @JoinColumn(name = "inquiry_id")
     private Inquiry inquiry;
+
 
     public Integer getAttributeId()
     {

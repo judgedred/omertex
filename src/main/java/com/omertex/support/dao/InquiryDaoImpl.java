@@ -48,24 +48,100 @@ public class InquiryDaoImpl implements InquiryDao
     @Override
     public void update(Inquiry inquiry) throws DaoException
     {
-
+        try
+        {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.update(inquiry);
+            session.getTransaction().commit();
+        }
+        catch(Exception e)
+        {
+            session.getTransaction().rollback();
+            throw new DaoException(e);
+        }
+        finally
+        {
+            if(session != null && session.isOpen())
+            {
+                session.close();
+            }
+        }
     }
 
     @Override
     public void delete(Inquiry inquiry) throws DaoException
     {
-
+        try
+        {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.delete(inquiry);
+            session.getTransaction().commit();
+        }
+        catch(Exception e)
+        {
+            session.getTransaction().rollback();
+            throw new DaoException(e);
+        }
+        finally
+        {
+            if(session != null && session.isOpen())
+            {
+                session.close();
+            }
+        }
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Inquiry> getInquiryAll() throws DaoException
     {
-       return null;
+        try
+        {
+            session = sessionFactory.openSession();
+            return (List<Inquiry>) session.createCriteria(Inquiry.class).list();
+        }
+        catch(Exception e)
+        {
+            throw new DaoException(e);
+        }
+        finally
+        {
+            if(session != null && session.isOpen())
+            {
+                session.close();
+            }
+        }
     }
 
     @Override
     public Inquiry getInquiryById(int id) throws DaoException
     {
-        return null;
+        try
+        {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+            Inquiry inquiry = (Inquiry)session.get(Inquiry.class, id);
+            if(inquiry != null)
+            {
+                return inquiry;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        catch(Exception e)
+        {
+            throw new DaoException(e);
+        }
+        finally
+        {
+            if(session != null && session.isOpen())
+            {
+                session.close();
+            }
+        }
     }
 }
