@@ -80,4 +80,43 @@ public class Inquiry
         this.topic = topic;
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if(this == o)
+        {
+            return true;
+        }
+        if(o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+
+        Inquiry inquiry = (Inquiry) o;
+
+        if(!inquiryId.equals(inquiry.inquiryId))
+        {
+            return false;
+        }
+        if(!description.equals(inquiry.description))
+        {
+            return false;
+        }
+        if(!createDate.equals(inquiry.createDate))
+        {
+            return false;
+        }
+        if(!customerName.equals(inquiry.customerName))
+        {
+            return false;
+        }
+        return topic.equals(inquiry.topic);
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return inquiryId.hashCode();
+    }
 }

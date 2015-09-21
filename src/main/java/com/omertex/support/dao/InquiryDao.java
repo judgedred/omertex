@@ -3,6 +3,7 @@ package com.omertex.support.dao;
 import com.omertex.support.domain.Inquiry;
 import java.util.List;
 
+
 public interface InquiryDao
 {
     public Inquiry create(Inquiry inquiry) throws DaoException;

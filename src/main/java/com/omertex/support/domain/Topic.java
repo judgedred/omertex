@@ -34,4 +34,31 @@ public class Topic
         this.topicName = topicName;
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if(this == o)
+        {
+            return true;
+        }
+        if(o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+
+        Topic topic = (Topic) o;
+
+        if(!topicId.equals(topic.topicId))
+        {
+            return false;
+        }
+        return topicName.equals(topic.topicName);
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return topicId.hashCode();
+    }
 }
