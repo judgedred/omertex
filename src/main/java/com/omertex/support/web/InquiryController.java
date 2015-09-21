@@ -10,19 +10,15 @@ import com.omertex.support.service.InquiryService;
 import com.omertex.support.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 //@RequestMapping("/customers/{customerName}/inquiries")
@@ -120,8 +116,8 @@ public class InquiryController
         return new RedirectView("/support/inquiries");
     }
 
-    @RequestMapping("/update/{inquiryId}")
-    public ModelAndView updateInquiry(@PathVariable Integer inquiryId) throws DaoException
+    @RequestMapping("/update/{inquiryId}/test")
+    public ModelAndView updateInquiry2(@PathVariable Integer inquiryId) throws DaoException
     {
         Inquiry inquiry = inquiryService.getInquiryById(inquiryId);
         Map<String, String> attributeMap = attributeOfInquiryService.getAttributeOfInquiryById(inquiryId);
@@ -132,7 +128,7 @@ public class InquiryController
         {
             topicMap.put(t.getTopicId(), t.getTopicName());
         }
-        ModelAndView mav = new ModelAndView("inquiryUpdate");
+        ModelAndView mav = new ModelAndView("inquiryUpdate2");
         mav.addObject("topicList", topicMap);
         mav.addObject("inquiry", inquiry);
         mav.addObject("form", form);
@@ -140,8 +136,8 @@ public class InquiryController
         return mav;
     }
 
-    @RequestMapping("/inquiryForm")
-    public ModelAndView inquiryForm() throws DaoException
+    @RequestMapping("/inquiryForm1")
+    public ModelAndView inquiryForm1() throws DaoException
     {
         ModelAndView mav = new ModelAndView("inquiryForm");
         List<Topic> topicList = topicService.getTopicAll();
@@ -158,8 +154,8 @@ public class InquiryController
         return mav;
     }
 
-    @RequestMapping(value = "/addInquiry", method = RequestMethod.POST)
-    public String addInquiryForm(@ModelAttribute("form") Form form, BindingResult result) throws DaoException
+    @RequestMapping(value = "/addInquiry1", method = RequestMethod.POST)
+    public String addInquiryForm1(@ModelAttribute("form") Form form, BindingResult result) throws DaoException
     {
         if(result.hasErrors())
         {
@@ -180,5 +176,111 @@ public class InquiryController
             form.getAttributeOfInquiryMap().clear();
         }
         return "redirect: /inquiryForm";
+    }
+
+    @RequestMapping(value = "/addInquiry", method = RequestMethod.POST)
+    public String addInquiryForm(@RequestParam MultiValueMap<String, String> params) throws Exception
+    {
+
+        Inquiry inquiry = new Inquiry();
+        Topic topic = new Topic();
+        AttributeOfInquiry attribute;
+        List<AttributeOfInquiry> attributeList = new LinkedList<>();
+        for(Map.Entry<String, List<String>> entry : params.entrySet())
+        {
+            if(entry.getKey().equals("customerName"))
+            {
+                inquiry.setCustomerName(entry.getValue().get(0));
+            }
+            else if(entry.getKey().equals("createDate"))
+            {
+                inquiry.setCreateDate(new SimpleDateFormat("yyyy-MM-dd").parse(entry.getValue().get(0)));
+            }
+            else if(entry.getKey().equals("description"))
+            {
+                inquiry.setDescription(entry.getValue().get(0));
+            }
+            else if(entry.getKey().equals("topic"))
+            {
+                topic.setTopicId(Integer.parseInt(entry.getValue().get(0)));
+                inquiry.setTopic(topic);
+            }
+            else if(entry.getKey().equals("attributeName"))
+            {
+                for(String s : entry.getValue())
+                {
+                    attribute = new AttributeOfInquiry();
+                    attribute.setAttributeName(s);
+                    attributeList.add(attribute);
+                }
+            }
+            else if(entry.getKey().equals("attributeValue"))
+            {
+                for(String s : entry.getValue())
+                {
+                    for(AttributeOfInquiry a : attributeList)
+                    {
+                        if(a.getAttributeValue() == null)
+                        {
+                            a.setAttributeValue(s);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+//        inquiry.setTopic(topic);
+        Inquiry inquiryCreated = inquiryService.create(inquiry);
+        for(AttributeOfInquiry a : attributeList)
+        {
+            a.setInquiry(inquiryCreated);
+            attributeOfInquiryService.create(a);
+        }
+
+
+        return "redirect: /inquiryForm";
+    }
+
+    @RequestMapping("/inquiryForm")
+    public ModelAndView inquiryForm() throws DaoException
+    {
+        ModelAndView mav = new ModelAndView("inquiryAdd");
+        List<Topic> topicList = topicService.getTopicAll();
+//        Map<Object, String> topicMap = new HashMap<>();
+//        Map<String, String> attributeMap = new HashMap<>();
+//        attributeMap.put("town", "Minsk");
+//        form.setAttributeOfInquiryMap(attributeMap);
+        /*for(Topic t : topicList)
+        {
+            topicMap.put(t.getTopicId(), t.getTopicName());
+        }*/
+        mav.addObject("topicList", topicList);
+        mav.addObject("topic", new Topic());
+
+        return mav;
+    }
+
+    @RequestMapping("/update/{inquiryId}/form")
+    public ModelAndView updateInquiryForm(@PathVariable Integer inquiryId) throws DaoException
+    {
+        Inquiry inquiry = inquiryService.getInquiryById(inquiryId);
+        Map<String, String> attributeMap = attributeOfInquiryService.getAttributeOfInquiryById(inquiryId);
+        List<Topic> topicList = topicService.getTopicAll();
+        ModelAndView mav = new ModelAndView("inquiryUpdateForm");
+        mav.addObject("topicList", topicList);
+        mav.addObject("inquiry", inquiry);
+        mav.addObject("attributeMap", attributeMap);
+        return mav;
+    }
+
+    @RequestMapping("/update/{inquiryId}")
+    public ModelAndView updateInquiry(@PathVariable Integer inquiryId, @ModelAttribute Inquiry inquiry) throws DaoException
+    {
+
+        inquiryService.update(inquiry);
+
+        ModelAndView mav = new ModelAndView("redirect: /update/{inquiryId}/form");
+
+        return mav;
     }
 }
