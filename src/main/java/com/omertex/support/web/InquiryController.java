@@ -9,9 +9,11 @@ import com.omertex.support.service.Form;
 import com.omertex.support.service.InquiryService;
 import com.omertex.support.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -192,7 +194,7 @@ public class InquiryController
             {
                 inquiry.setCustomerName(entry.getValue().get(0));
             }
-            else if(entry.getKey().equals("createDate"))
+            else if(entry.getKey().equals("createDate") && !entry.getValue().get(0).equals(""))
             {
                 inquiry.setCreateDate(new SimpleDateFormat("yyyy-MM-dd").parse(entry.getValue().get(0)));
             }
@@ -200,7 +202,7 @@ public class InquiryController
             {
                 inquiry.setDescription(entry.getValue().get(0));
             }
-            else if(entry.getKey().equals("topic"))
+            else if(entry.getKey().equals("topic") && !entry.getValue().get(0).equals(""))
             {
                 topic.setTopicId(Integer.parseInt(entry.getValue().get(0)));
                 inquiry.setTopic(topic);
@@ -229,7 +231,6 @@ public class InquiryController
                 }
             }
         }
-//        inquiry.setTopic(topic);
         Inquiry inquiryCreated = inquiryService.create(inquiry);
         for(AttributeOfInquiry a : attributeList)
         {
@@ -274,13 +275,23 @@ public class InquiryController
     }
 
     @RequestMapping("/update/{inquiryId}")
-    public ModelAndView updateInquiry(@PathVariable Integer inquiryId, @ModelAttribute Inquiry inquiry) throws DaoException
+    public ModelAndView updateInquiry(@PathVariable Integer inquiryId, @ModelAttribute Inquiry inquiry, BindingResult result) throws DaoException
     {
+        if(result.hasErrors())
+        {
 
-        inquiryService.update(inquiry);
+        }
+//        inquiryService.update(inquiry);
 
-        ModelAndView mav = new ModelAndView("redirect: /update/{inquiryId}/form");
+        ModelAndView mav = new ModelAndView(new RedirectView("redirect: update/{inquiryId}/form"));
 
         return mav;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder)
+    {
+        binder.registerCustomEditor(       Date.class,
+                new CustomDateEditor(new SimpleDateFormat("dd-MM-yyyy"), true));
     }
 }
