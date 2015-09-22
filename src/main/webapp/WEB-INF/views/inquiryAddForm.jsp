@@ -15,7 +15,7 @@
 <h2>Add an inquiry</h2>
 
 
-<form method="post" action="addInquiry" id="inquiryForm">
+<form method="post" action="addInquiry" id="inquiryAddForm">
     <table>
     <tr>
         <td><label for id="customerName">Имя клиента</label></td>
@@ -23,7 +23,7 @@
     </tr>
     <tr>
         <td><label for id="topic">Тема</label></td>
-        <td><select name="topic" id="topic"/>
+        <td><select id="topic" name="topic"/>
             <c:forEach items="${topicList}" var="topic">
                 <option value="${topic.topicId}">${topic.topicName}</option>
 

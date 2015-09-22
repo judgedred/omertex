@@ -41,43 +41,6 @@ public class InquiryController
     @Autowired
     private Form form;
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addInquiry(@ModelAttribute("inquiry") Inquiry inquiry, BindingResult result) throws DaoException
-    {
-        if(result.hasErrors())
-        {
-
-        }
-        this.inquiry = inquiryService.create(inquiry);
-
-        if(attributeMap != null && !attributeMap.isEmpty())
-        {
-            for(Map.Entry<String, String> entry : attributeMap.entrySet())
-            {
-                AttributeOfInquiry attribute = new AttributeOfInquiry();
-                attribute.setInquiry(this.inquiry);
-                attribute.setAttributeName(entry.getKey());
-                attribute.setAttributeValue(entry.getValue());
-                attributeOfInquiryService.create(attribute);
-            }
-            attributeMap.clear();
-        }
-        return "redirect: /inquiries";
-    }
-
-    @RequestMapping(value = "/addAttribute", method = RequestMethod.POST)
-    public String addAttribute(@ModelAttribute("attribute")AttributeOfInquiry attribute, BindingResult result) throws DaoException
-    {
-        if(attributeMap == null)
-        {
-            attributeMap = new HashMap<>();
-        }
-        attributeMap.put(attribute.getAttributeName(), attribute.getAttributeValue());
-
-        return "redirect: /inquiries";
-
-    }
-
     @RequestMapping("/inquiries")
     public ModelAndView home() throws DaoException
     {
@@ -118,193 +81,99 @@ public class InquiryController
         return new RedirectView("/support/inquiries");
     }
 
-    @RequestMapping("/update/{inquiryId}/test")
-    public ModelAndView updateInquiry2(@PathVariable Integer inquiryId) throws DaoException
-    {
-        Inquiry inquiry = inquiryService.getInquiryById(inquiryId);
-        Map<String, String> attributeMap = attributeOfInquiryService.getAttributeMapById(inquiryId);
-        form.setAttributeOfInquiryMap(attributeMap);
-        List<Topic> topicList = topicService.getTopicAll();
-        Map<Object, String> topicMap = new HashMap<>();
-        for(Topic t : topicList)
-        {
-            topicMap.put(t.getTopicId(), t.getTopicName());
-        }
-        ModelAndView mav = new ModelAndView("inquiryUpdate2");
-        mav.addObject("topicList", topicMap);
-        mav.addObject("inquiry", inquiry);
-        mav.addObject("form", form);
-        mav.addObject("attribute", new AttributeOfInquiry());
-        return mav;
-    }
-
-    @RequestMapping("/inquiryForm1")
-    public ModelAndView inquiryForm1() throws DaoException
-    {
-        ModelAndView mav = new ModelAndView("inquiryForm");
-        List<Topic> topicList = topicService.getTopicAll();
-        Map<Object, String> topicMap = new HashMap<>();
-//        Map<String, String> attributeMap = new HashMap<>();
-//        attributeMap.put("town", "Minsk");
-//        form.setAttributeOfInquiryMap(attributeMap);
-        for(Topic t : topicList)
-        {
-            topicMap.put(t.getTopicId(), t.getTopicName());
-        }
-        mav.addObject("topicList", topicMap);
-        mav.addObject("form", form);
-        return mav;
-    }
-
-    @RequestMapping(value = "/addInquiry1", method = RequestMethod.POST)
-    public String addInquiryForm1(@ModelAttribute("form") Form form, BindingResult result) throws DaoException
+    @RequestMapping(value = "/addInquiry", method = RequestMethod.POST)
+    public String addInquiryForm(@ModelAttribute Inquiry inquiry, BindingResult result, @RequestParam MultiValueMap<String, String> params) throws Exception
     {
         if(result.hasErrors())
         {
 
         }
-        this.inquiry = inquiryService.create(form.getInquiry());
-
-        if(form.getAttributeOfInquiryMap() != null && !form.getAttributeOfInquiryMap().isEmpty())
+        if(inquiry != null && !inquiry.getCustomerName().equals("") && !inquiry.getDescription().equals(""))
         {
-            for(Map.Entry<String, String> entry : form.getAttributeOfInquiryMap().entrySet())
+            Inquiry inquiryCreated = inquiryService.create(inquiry);
+            AttributeOfInquiry attribute;
+            List<AttributeOfInquiry> attributeList = new LinkedList<>();
+            for(Map.Entry<String, List<String>> entry : params.entrySet())
             {
-                AttributeOfInquiry attribute = new AttributeOfInquiry();
-                attribute.setInquiry(this.inquiry);
-                attribute.setAttributeName(entry.getKey());
-                attribute.setAttributeValue(entry.getValue());
-                attributeOfInquiryService.create(attribute);
-            }
-            form.getAttributeOfInquiryMap().clear();
-        }
-        return "redirect: /inquiryForm";
-    }
-
-    @RequestMapping(value = "/addInquiry", method = RequestMethod.POST)
-    public String addInquiryForm(@RequestParam MultiValueMap<String, String> params) throws Exception
-    {
-
-        Inquiry inquiry = new Inquiry();
-        Topic topic = new Topic();
-        AttributeOfInquiry attribute;
-        List<AttributeOfInquiry> attributeList = new LinkedList<>();
-        for(Map.Entry<String, List<String>> entry : params.entrySet())
-        {
-            if(entry.getKey().equals("customerName"))
-            {
-                inquiry.setCustomerName(entry.getValue().get(0));
-            }
-            else if(entry.getKey().equals("createDate") && !entry.getValue().get(0).equals(""))
-            {
-                inquiry.setCreateDate(new SimpleDateFormat("yyyy-MM-dd").parse(entry.getValue().get(0)));
-            }
-            else if(entry.getKey().equals("description"))
-            {
-                inquiry.setDescription(entry.getValue().get(0));
-            }
-            else if(entry.getKey().equals("topic") && !entry.getValue().get(0).equals(""))
-            {
-                topic.setTopicId(Integer.parseInt(entry.getValue().get(0)));
-                inquiry.setTopic(topic);
-            }
-            else if(entry.getKey().equals("attributeName"))
-            {
-                for(String s : entry.getValue())
+                if(entry.getKey().equals("attributeName"))
                 {
-                    attribute = new AttributeOfInquiry();
-                    attribute.setAttributeName(s);
-                    attributeList.add(attribute);
-                }
-            }
-            else if(entry.getKey().equals("attributeValue"))
-            {
-                for(String s : entry.getValue())
-                {
-                    for(AttributeOfInquiry a : attributeList)
+                    for(String s : entry.getValue())
                     {
-                        if(a.getAttributeValue() == null)
+                        attribute = new AttributeOfInquiry();
+                        attribute.setAttributeName(s);
+                        attributeList.add(attribute);
+                    }
+                }
+                else if(entry.getKey().equals("attributeValue"))
+                {
+                    for(String s : entry.getValue())
+                    {
+                        for(AttributeOfInquiry a : attributeList)
                         {
                             a.setAttributeValue(s);
+                            a.setInquiry(inquiryCreated);
+                            attributeOfInquiryService.create(a);
+                            attributeList.remove(a);
                             break;
                         }
                     }
                 }
             }
         }
-        Inquiry inquiryCreated = inquiryService.create(inquiry);
-        for(AttributeOfInquiry a : attributeList)
-        {
-            a.setInquiry(inquiryCreated);
-            attributeOfInquiryService.create(a);
-        }
 
 
-        return "redirect: /inquiryForm";
+        return "redirect: /inquiryAddForm";
     }
 
-    @RequestMapping("/inquiryForm")
+    @RequestMapping("/inquiryAddForm")
     public ModelAndView inquiryForm() throws DaoException
     {
-        ModelAndView mav = new ModelAndView("inquiryAdd");
+        ModelAndView mav = new ModelAndView("inquiryAddForm");
         List<Topic> topicList = topicService.getTopicAll();
-//        Map<Object, String> topicMap = new HashMap<>();
-//        Map<String, String> attributeMap = new HashMap<>();
-//        attributeMap.put("town", "Minsk");
-//        form.setAttributeOfInquiryMap(attributeMap);
-        /*for(Topic t : topicList)
-        {
-            topicMap.put(t.getTopicId(), t.getTopicName());
-        }*/
         mav.addObject("topicList", topicList);
         mav.addObject("topic", new Topic());
-
-        return mav;
-    }
-
-    @RequestMapping("/update/{inquiryId}/form")
-    public ModelAndView updateInquiryForm(@PathVariable Integer inquiryId) throws DaoException
-    {
-        Inquiry inquiry = inquiryService.getInquiryById(inquiryId);
-        HashMap<String, String> attributeMap = attributeOfInquiryService.getAttributeMapById(inquiryId);
-        List<Topic> topicList = topicService.getTopicAll();
-        ModelAndView mav = new ModelAndView("inquiryUpdateForm");
-        mav.addObject("topicList", topicList);
-        mav.addObject("inquiry", inquiry);
-        mav.addObject("attributeMap", attributeMap);
+        mav.addObject("inquiry", new Inquiry());
 
         return mav;
     }
 
     @RequestMapping("/update/{inquiryId}")
     public ModelAndView updateInquiry(@PathVariable Integer inquiryId, @ModelAttribute Inquiry inquiry, BindingResult result,
-                                      @RequestParam Map<String, String> attributeMap) throws DaoException
+                                      @RequestParam Map<String, String> attributeMap) throws Exception
     {
         if(result.hasErrors())
         {
 
         }
-        inquiryService.update(inquiry);
-        List<AttributeOfInquiry> attributeList = attributeOfInquiryService.getAttributeAllById(inquiryId);
-        for(Map.Entry<String, String> entry : attributeMap.entrySet())
+        if(inquiry != null && inquiry.getCustomerName() != null && inquiry.getDescription() != null)
         {
-            if(entry.getKey().contains("attributeMap"))
+            inquiryService.update(inquiry);
+            List<AttributeOfInquiry> attributeList = attributeOfInquiryService.getAttributeAllById(inquiryId);
+            for(Map.Entry<String, String> entry : attributeMap.entrySet())
             {
-                for(AttributeOfInquiry a : attributeList)
+                if(entry.getKey().contains("attributeMap"))
                 {
-                    if(entry.getKey().contains(a.getAttributeName()))
+                    for(AttributeOfInquiry a : attributeList)
                     {
+                        if(entry.getKey().contains(a.getAttributeName()))
+                        {
 //                        a.setAttributeName(entry.getKey());
-                        a.setAttributeValue(entry.getValue());
-                        attributeOfInquiryService.update(a);
-                        attributeList.remove(a);
-                        break;
+                            a.setAttributeValue(entry.getValue());
+                            attributeOfInquiryService.update(a);
+                            attributeList.remove(a);
+                            break;
+                        }
                     }
                 }
             }
         }
-
-
-        ModelAndView mav = new ModelAndView(new RedirectView("redirect: update/{inquiryId}/form"));
+        inquiry = inquiryService.getInquiryById(inquiryId);
+        attributeMap = attributeOfInquiryService.getAttributeMapById(inquiryId);
+        List<Topic> topicList = topicService.getTopicAll();
+        ModelAndView mav = new ModelAndView("inquiryUpdateForm");
+        mav.addObject("topicList", topicList);
+        mav.addObject("inquiry", inquiry);
+        mav.addObject("attributeMap", attributeMap);
 
         return mav;
     }

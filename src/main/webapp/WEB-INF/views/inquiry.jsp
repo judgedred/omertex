@@ -84,7 +84,7 @@
                 <td>${inquiry.customerName}</td>
                 <td>${inquiry.description}</td>
                 <td>${inquiry.createDate}</td>
-                <td><a href="update/${inquiry.inquiryId}/form">Изменить</a></td>
+                <td><a href="update/${inquiry.inquiryId}">Изменить</a></td>
                 <td><a href="delete/${inquiry.inquiryId}">Удалить</a></td>
             </tr>
         </c:forEach>
