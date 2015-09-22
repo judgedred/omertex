@@ -26,7 +26,7 @@
             <td><label for id="topic">Тема</label></td>
             <td><select name="topic" id="topic"/>
                 <c:forEach items="${topicList}" var="topic">
-                    <option value="${inquiry.topic.topicId}">${topic.topicName}</option>
+                    <option value="${topic.topicId}" ${topic.topicId == inquiry.topic.topicId ? 'selected' : ''}>${topic.topicName}</option>
 
                 </c:forEach>
             </td>

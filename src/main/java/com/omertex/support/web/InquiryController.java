@@ -275,13 +275,21 @@ public class InquiryController
     }
 
     @RequestMapping("/update/{inquiryId}")
-    public ModelAndView updateInquiry(@PathVariable Integer inquiryId, @ModelAttribute Inquiry inquiry, BindingResult result) throws DaoException
+    public ModelAndView updateInquiry(@PathVariable Integer inquiryId, @ModelAttribute Inquiry inquiry,
+                                      @ModelAttribute("attributeMap") Map<String, String> attributeMap, BindingResult result) throws DaoException
     {
         if(result.hasErrors())
         {
 
         }
-//        inquiryService.update(inquiry);
+        inquiryService.update(inquiry);
+        AttributeOfInquiry attribute = new AttributeOfInquiry();
+        attribute.setInquiry(inquiry);
+        for(String s : attributeMap.values())
+        {
+
+        }
+
 
         ModelAndView mav = new ModelAndView(new RedirectView("redirect: update/{inquiryId}/form"));
 
@@ -292,6 +300,7 @@ public class InquiryController
     public void initBinder(WebDataBinder binder)
     {
         binder.registerCustomEditor(       Date.class,
-                new CustomDateEditor(new SimpleDateFormat("dd-MM-yyyy"), true));
+                new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd HH:mm"), true));
+        binder.registerCustomEditor(Topic.class, new TopicEditor());
     }
 }
