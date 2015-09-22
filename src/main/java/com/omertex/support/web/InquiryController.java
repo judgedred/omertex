@@ -87,12 +87,12 @@ public class InquiryController
 //        return "inquiry";
         ModelAndView mav = new ModelAndView("inquiry");
         List<Topic> topicList = topicService.getTopicAll();
-        Map<Object, String> topicMap = new HashMap<>();
+        /*Map<Object, String> topicMap = new HashMap<>();
         for(Topic t : topicList)
         {
             topicMap.put(t.getTopicId(), t.getTopicName());
-        }
-        mav.addObject("topicList", topicMap);
+        }*/
+        mav.addObject("topicList", topicList);
         mav.addObject("inquiry", new Inquiry());
         mav.addObject("attribute", new AttributeOfInquiry());
         mav.addObject("inquiryList", inquiryService.getInquiryAll());
@@ -122,7 +122,7 @@ public class InquiryController
     public ModelAndView updateInquiry2(@PathVariable Integer inquiryId) throws DaoException
     {
         Inquiry inquiry = inquiryService.getInquiryById(inquiryId);
-        Map<String, String> attributeMap = attributeOfInquiryService.getAttributeOfInquiryById(inquiryId);
+        Map<String, String> attributeMap = attributeOfInquiryService.getAttributeMapById(inquiryId);
         form.setAttributeOfInquiryMap(attributeMap);
         List<Topic> topicList = topicService.getTopicAll();
         Map<Object, String> topicMap = new HashMap<>();
@@ -265,29 +265,42 @@ public class InquiryController
     public ModelAndView updateInquiryForm(@PathVariable Integer inquiryId) throws DaoException
     {
         Inquiry inquiry = inquiryService.getInquiryById(inquiryId);
-        Map<String, String> attributeMap = attributeOfInquiryService.getAttributeOfInquiryById(inquiryId);
+        HashMap<String, String> attributeMap = attributeOfInquiryService.getAttributeMapById(inquiryId);
         List<Topic> topicList = topicService.getTopicAll();
         ModelAndView mav = new ModelAndView("inquiryUpdateForm");
         mav.addObject("topicList", topicList);
         mav.addObject("inquiry", inquiry);
         mav.addObject("attributeMap", attributeMap);
+
         return mav;
     }
 
     @RequestMapping("/update/{inquiryId}")
-    public ModelAndView updateInquiry(@PathVariable Integer inquiryId, @ModelAttribute Inquiry inquiry,
-                                      @ModelAttribute("attributeMap") Map<String, String> attributeMap, BindingResult result) throws DaoException
+    public ModelAndView updateInquiry(@PathVariable Integer inquiryId, @ModelAttribute Inquiry inquiry, BindingResult result,
+                                      @RequestParam Map<String, String> attributeMap) throws DaoException
     {
         if(result.hasErrors())
         {
 
         }
         inquiryService.update(inquiry);
-        AttributeOfInquiry attribute = new AttributeOfInquiry();
-        attribute.setInquiry(inquiry);
-        for(String s : attributeMap.values())
+        List<AttributeOfInquiry> attributeList = attributeOfInquiryService.getAttributeAllById(inquiryId);
+        for(Map.Entry<String, String> entry : attributeMap.entrySet())
         {
-
+            if(entry.getKey().contains("attributeMap"))
+            {
+                for(AttributeOfInquiry a : attributeList)
+                {
+                    if(entry.getKey().contains(a.getAttributeName()))
+                    {
+//                        a.setAttributeName(entry.getKey());
+                        a.setAttributeValue(entry.getValue());
+                        attributeOfInquiryService.update(a);
+                        attributeList.remove(a);
+                        break;
+                    }
+                }
+            }
         }
 
 
@@ -299,7 +312,7 @@ public class InquiryController
     @InitBinder
     public void initBinder(WebDataBinder binder)
     {
-        binder.registerCustomEditor(       Date.class,
+        binder.registerCustomEditor(Date.class,
                 new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd HH:mm"), true));
         binder.registerCustomEditor(Topic.class, new TopicEditor());
     }

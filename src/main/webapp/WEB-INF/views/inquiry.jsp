@@ -23,12 +23,12 @@
             </form:label></td>
             <td><form:input path="customerName" /></td>
         </tr>
-        <tr>
+        <%--<tr>
             <td><form:label path="topic">
                 Тема
             </form:label></td>
             <td><form:select path="topic.topicId" items="${topicList}"  /> </td>
-        </tr>
+        </tr>--%>
         <tr>
             <td><form:label path="createDate">
                 Дата создания

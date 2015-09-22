@@ -5,6 +5,7 @@ import com.omertex.support.dao.DaoException;
 import com.omertex.support.domain.AttributeOfInquiry;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,5 +17,6 @@ public interface AttributeOfInquiryService
     public void delete(AttributeOfInquiry attribute) throws DaoException;
     public List<AttributeOfInquiry> getAttributeAll() throws DaoException;
     public AttributeOfInquiry getAttributeById(int id) throws DaoException;
-    public Map<String, String> getAttributeOfInquiryById(int inquiryId) throws DaoException;
+    public HashMap<String, String> getAttributeMapById(int inquiryId) throws DaoException;
+    public List<AttributeOfInquiry> getAttributeAllById(int inquiryId) throws DaoException;
 }

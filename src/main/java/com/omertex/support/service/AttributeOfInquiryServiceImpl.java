@@ -7,9 +7,7 @@ import com.omertex.support.domain.AttributeOfInquiry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AttributeOfInquiryServiceImpl implements AttributeOfInquiryService
@@ -48,10 +46,10 @@ public class AttributeOfInquiryServiceImpl implements AttributeOfInquiryService
     }
 
     @Override
-    public Map<String, String> getAttributeOfInquiryById(int inquiryId) throws DaoException
+    public HashMap<String, String> getAttributeMapById(int inquiryId) throws DaoException
     {
         List<AttributeOfInquiry> attributeList = attributeOfInquiryDao.getAttributeAll();
-        Map<String, String> attributeMap = new HashMap<>();
+        HashMap<String, String> attributeMap = new HashMap<>();
         if(attributeList != null)
         {
             for(AttributeOfInquiry a : attributeList)
@@ -62,6 +60,28 @@ public class AttributeOfInquiryServiceImpl implements AttributeOfInquiryService
                 }
             }
             return attributeMap;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    @Override
+    public List<AttributeOfInquiry> getAttributeAllById(int inquiryId) throws DaoException
+    {
+        List<AttributeOfInquiry> attributeList = attributeOfInquiryDao.getAttributeAll();
+        List<AttributeOfInquiry> filteredAttributeList = new ArrayList<>();
+        if(attributeList != null)
+        {
+            for(AttributeOfInquiry a : attributeList)
+            {
+                if(a.getInquiry().getInquiryId() == inquiryId)
+                {
+                    filteredAttributeList.add(a);
+                }
+            }
+            return filteredAttributeList;
         }
         else
         {
