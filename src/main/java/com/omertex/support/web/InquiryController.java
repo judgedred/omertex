@@ -78,7 +78,8 @@ public class InquiryController
     }
 
     @RequestMapping(value = "/customers/{customerName}/inquiries", method = RequestMethod.POST)
-    public ModelAndView addInquiry(@ModelAttribute Inquiry inquiry,
+    @ResponseBody
+    public Inquiry addInquiry(@RequestBody Inquiry inquiry,
                                  BindingResult result,
                                  @RequestParam MultiValueMap<String, String> params) throws Exception
     {
@@ -119,7 +120,7 @@ public class InquiryController
             }
         }
 
-        return new ModelAndView(new RedirectView("/support/inquiries"));
+        return inquiry;
     }
 
     @RequestMapping("/inquiryAddForm/{customerName}")
