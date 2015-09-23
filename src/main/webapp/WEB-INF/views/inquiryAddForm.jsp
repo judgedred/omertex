@@ -15,11 +15,11 @@
 <h2>Add an inquiry</h2>
 
 
-<form method="post" action="addInquiry" id="inquiryAddForm">
+<form method="post" action="/support/customers/${inquiry.customerName}/inquiries" id="inquiryAddForm">
     <table>
     <tr>
         <td><label for id="customerName">Имя клиента</label></td>
-        <td><input type="text" id="customerName" name="customerName"> </td>
+        <td><input type="text" id="customerName" name="customerName" value="${inquiry.customerName}"> </td>
     </tr>
     <tr>
         <td><label for id="topic">Тема</label></td>

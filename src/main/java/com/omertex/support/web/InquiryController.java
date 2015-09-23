@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -48,7 +49,7 @@ public class InquiryController
 //        model.addAttribute("attribute", new AttributeOfInquiry());
 //        attributeMap.clear();
 //        return "inquiry";
-        ModelAndView mav = new ModelAndView("inquiry");
+        ModelAndView mav = new ModelAndView("inquiries");
         List<Topic> topicList = topicService.getTopicAll();
         /*Map<Object, String> topicMap = new HashMap<>();
         for(Topic t : topicList)
@@ -62,27 +63,40 @@ public class InquiryController
         return mav;
     }
 
-    @RequestMapping("/delete/{inquiryId}")
-    public View deleteInquiry(@PathVariable Integer inquiryId) throws DaoException
+    @RequestMapping(value = "customers/{customerName}/inquiries/{inquiryId}", method = RequestMethod.DELETE)
+    public ModelAndView deleteInquiry(@PathVariable Integer inquiryId, String customerName, HttpServletResponse response) throws Exception
     {
-        Inquiry inquiry = inquiryService.getInquiryById(inquiryId);
-        if(inquiry != null)
+        try
         {
-            List<AttributeOfInquiry> attributeList = attributeOfInquiryService.getAttributeAll();
-            for(AttributeOfInquiry a : attributeList)
+            Inquiry inquiry = inquiryService.getInquiryById(inquiryId);
+            if(inquiry != null)
             {
-                if(a.getInquiry().getInquiryId().equals(inquiryId))
+                List<AttributeOfInquiry> attributeList = attributeOfInquiryService.getAttributeAll();
+                for(AttributeOfInquiry a : attributeList)
                 {
-                    attributeOfInquiryService.delete(a);
+                    if(a.getInquiry().getInquiryId().equals(inquiryId))
+                    {
+                        attributeOfInquiryService.delete(a);
+                    }
                 }
+                inquiryService.delete(inquiry);
             }
-            inquiryService.delete(inquiry);
+            response.setStatus(HttpServletResponse.SC_OK);
+            return new ModelAndView(new RedirectView("/support/inquiries"));
         }
-        return new RedirectView("/support/inquiries");
+        catch(Exception e)
+        {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return new ModelAndView("error");
+        }
     }
 
-    @RequestMapping(value = "/addInquiry", method = RequestMethod.POST)
-    public String addInquiryForm(@ModelAttribute Inquiry inquiry, BindingResult result, @RequestParam MultiValueMap<String, String> params) throws Exception
+    @RequestMapping(value = "/customers/{customerName}/inquiries", method = RequestMethod.POST)
+    public ModelAndView addInquiryForm(@ModelAttribute Inquiry inquiry,
+                                 BindingResult result,
+                                 @RequestParam MultiValueMap<String, String> params,
+                                 @PathVariable String customerName) throws Exception
     {
         if(result.hasErrors())
         {
@@ -122,17 +136,19 @@ public class InquiryController
         }
 
 
-        return "redirect: /inquiryAddForm";
+        return new ModelAndView(new RedirectView("/support/inquiries"));
     }
 
-    @RequestMapping("/inquiryAddForm")
-    public ModelAndView inquiryForm() throws DaoException
+    @RequestMapping("/inquiryAddForm/{customerName}")
+    public ModelAndView inquiryForm(@PathVariable String customerName) throws DaoException
     {
         ModelAndView mav = new ModelAndView("inquiryAddForm");
         List<Topic> topicList = topicService.getTopicAll();
+        Inquiry inquiry = new Inquiry();
+        inquiry.setCustomerName(customerName);
         mav.addObject("topicList", topicList);
         mav.addObject("topic", new Topic());
-        mav.addObject("inquiry", new Inquiry());
+        mav.addObject("inquiry", inquiry);
 
         return mav;
     }

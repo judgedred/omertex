@@ -10,14 +10,6 @@
     <!-- Определяем папку, в которой будем искать веб компоненты (контроллеры)-->
     <context:component-scan base-package="com.omertex.support.web"/>
 
-    <bean id="conversionService"
-          class="org.springframework.context.support.ConversionServiceFactoryBean">
-        <property name="converters">
-            <list>
-                <bean class="com.omertex.support.web.StringToTopic"/>
-                <bean class="com.omertex.support.web.TopicToString"/>
-            </list>
-        </property>
-    </bean>
+
 
 </beans>
