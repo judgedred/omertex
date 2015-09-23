@@ -36,26 +36,11 @@ public class InquiryController
     @Autowired
     private TopicService topicService;
 
-    private Inquiry inquiry;
-    private Map<String, String> attributeMap;
-
-    @Autowired
-    private Form form;
-
     @RequestMapping("/inquiries")
     public ModelAndView home() throws DaoException
     {
-//        model.addAttribute("inquiry", new Inquiry());
-//        model.addAttribute("attribute", new AttributeOfInquiry());
-//        attributeMap.clear();
-//        return "inquiry";
         ModelAndView mav = new ModelAndView("inquiries");
         List<Topic> topicList = topicService.getTopicAll();
-        /*Map<Object, String> topicMap = new HashMap<>();
-        for(Topic t : topicList)
-        {
-            topicMap.put(t.getTopicId(), t.getTopicName());
-        }*/
         mav.addObject("topicList", topicList);
         mav.addObject("inquiry", new Inquiry());
         mav.addObject("attribute", new AttributeOfInquiry());
@@ -93,10 +78,9 @@ public class InquiryController
     }
 
     @RequestMapping(value = "/customers/{customerName}/inquiries", method = RequestMethod.POST)
-    public ModelAndView addInquiryForm(@ModelAttribute Inquiry inquiry,
+    public ModelAndView addInquiry(@ModelAttribute Inquiry inquiry,
                                  BindingResult result,
-                                 @RequestParam MultiValueMap<String, String> params,
-                                 @PathVariable String customerName) throws Exception
+                                 @RequestParam MultiValueMap<String, String> params) throws Exception
     {
         if(result.hasErrors())
         {
@@ -135,7 +119,6 @@ public class InquiryController
             }
         }
 
-
         return new ModelAndView(new RedirectView("/support/inquiries"));
     }
 
@@ -173,7 +156,6 @@ public class InquiryController
                     {
                         if(entry.getKey().contains(a.getAttributeName()))
                         {
-//                        a.setAttributeName(entry.getKey());
                             a.setAttributeValue(entry.getValue());
                             attributeOfInquiryService.update(a);
                             attributeList.remove(a);
