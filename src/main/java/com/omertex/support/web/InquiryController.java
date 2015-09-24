@@ -62,8 +62,8 @@ public class InquiryController
                 && inquiry.getCreateDate() != null && inquiry.getTopic() != null)
         {
             Inquiry inquiryCreated = inquiryService.create(inquiry);
-            Map<String, String> params = inquiryWrapped.getAttributeMap();
-            for(Map.Entry<String, String> entry : params.entrySet())
+            Map<String, String> attributeMap = inquiryWrapped.getAttributeMap();
+            for(Map.Entry<String, String> entry : attributeMap.entrySet())
             {
                 AttributeOfInquiry attribute = new AttributeOfInquiry();
                 attribute.setInquiry(inquiryCreated);
@@ -160,14 +160,4 @@ public class InquiryController
             return null;
         }
     }
-
-
-
-    /*@InitBinder
-    public void initBinder(WebDataBinder binder)
-    {
-        binder.registerCustomEditor(Date.class,
-                new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd HH:mm"), true));
-        binder.registerCustomEditor(Topic.class, new TopicEditor());
-    }*/
 }

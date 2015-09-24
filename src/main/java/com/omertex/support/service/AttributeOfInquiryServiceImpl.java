@@ -40,16 +40,10 @@ public class AttributeOfInquiryServiceImpl implements AttributeOfInquiryService
     }
 
     @Override
-    public AttributeOfInquiry getAttributeById(int id) throws DaoException
-    {
-        return attributeOfInquiryDao.getAttributeById(id);
-    }
-
-    @Override
-    public HashMap<String, String> getAttributeMapById(int inquiryId) throws DaoException
+    public Map<String, String> getAttributeMapById(int inquiryId) throws DaoException
     {
         List<AttributeOfInquiry> attributeList = attributeOfInquiryDao.getAttributeAll();
-        HashMap<String, String> attributeMap = new HashMap<>();
+        Map<String, String> attributeMap = new HashMap<>();
         if(attributeList != null)
         {
             for(AttributeOfInquiry a : attributeList)

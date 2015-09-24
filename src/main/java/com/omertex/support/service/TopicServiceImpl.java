@@ -16,7 +16,6 @@ public class TopicServiceImpl implements TopicService
     private TopicDao topicDao;
 
     @Override
-    @Transactional
     public List<Topic> getTopicAll() throws DaoException
     {
         try
