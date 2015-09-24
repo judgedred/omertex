@@ -1,30 +1,19 @@
 package com.omertex.support.web;
 
-import com.omertex.support.dao.DaoException;
 import com.omertex.support.domain.AttributeOfInquiry;
 import com.omertex.support.domain.Inquiry;
-import com.omertex.support.domain.Topic;
 import com.omertex.support.service.AttributeOfInquiryService;
-import com.omertex.support.service.Form;
 import com.omertex.support.service.InquiryService;
-import com.omertex.support.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
-//@RequestMapping("/customers/{customerName}/inquiries")
 public class InquiryController
 {
     @Autowired
@@ -33,23 +22,9 @@ public class InquiryController
     @Autowired
     private AttributeOfInquiryService attributeOfInquiryService;
 
-    @Autowired
-    private TopicService topicService;
-
-    @RequestMapping("/inquiries")
-    public ModelAndView home() throws DaoException
-    {
-        ModelAndView mav = new ModelAndView("inquiries");
-        List<Topic> topicList = topicService.getTopicAll();
-        mav.addObject("topicList", topicList);
-        mav.addObject("inquiry", new Inquiry());
-        mav.addObject("attribute", new AttributeOfInquiry());
-        mav.addObject("inquiryList", inquiryService.getInquiryAll());
-        return mav;
-    }
 
     @RequestMapping(value = "customers/{customerName}/inquiries/{inquiryId}", method = RequestMethod.DELETE)
-    public ModelAndView deleteInquiry(@PathVariable Integer inquiryId, HttpServletResponse response) throws Exception
+    public void deleteInquiry(@PathVariable Integer inquiryId, HttpServletResponse response) throws Exception
     {
         try
         {
@@ -67,13 +42,11 @@ public class InquiryController
                 inquiryService.delete(inquiry);
             }
             response.setStatus(HttpServletResponse.SC_OK);
-            return new ModelAndView(new RedirectView("/support/inquiries"));
         }
         catch(Exception e)
         {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
-            return new ModelAndView("error");
         }
     }
 
@@ -85,7 +58,8 @@ public class InquiryController
             System.out.println(result.getAllErrors());
         }
         Inquiry inquiry = inquiryWrapped.getInquiry();
-        if(inquiry != null && !inquiry.getCustomerName().equals("") && !inquiry.getDescription().equals(""))
+        if(inquiry != null && !inquiry.getCustomerName().equals("") && !inquiry.getDescription().equals("")
+                && inquiry.getCreateDate() != null && inquiry.getTopic() != null)
         {
             Inquiry inquiryCreated = inquiryService.create(inquiry);
             Map<String, String> params = inquiryWrapped.getAttributeMap();
@@ -99,63 +73,95 @@ public class InquiryController
             }
             return inquiryCreated;
         }
-
-        return null;
+        else
+        {
+            return null;
+        }
     }
 
-    @RequestMapping("/inquiryAddForm/{customerName}")
-    public ModelAndView inquiryForm(@PathVariable String customerName) throws DaoException
-    {
-        ModelAndView mav = new ModelAndView("inquiryAddForm");
-        List<Topic> topicList = topicService.getTopicAll();
-        Inquiry inquiry = new Inquiry();
-        inquiry.setCustomerName(customerName);
-        mav.addObject("topicList", topicList);
-        mav.addObject("topic", new Topic());
-        mav.addObject("inquiry", inquiry);
-
-        return mav;
-    }
-
-    @RequestMapping("/update/{inquiryId}")
-    public ModelAndView updateInquiry(@PathVariable Integer inquiryId, @ModelAttribute Inquiry inquiry, BindingResult result,
-                                      @RequestParam Map<String, String> attributeMap) throws Exception
+    @RequestMapping(value = "/customers/{customerName}/inquiries/{inquiryId}", method = RequestMethod.PUT)
+    public @ResponseBody Inquiry updateInquiry(@PathVariable Integer inquiryId,
+                                               @RequestBody InquiryWrapper inquiryWrapped,
+                                               BindingResult result) throws Exception
     {
         if(result.hasErrors())
         {
 
         }
-        if(inquiry != null && inquiry.getCustomerName() != null && inquiry.getDescription() != null)
+        Inquiry inquiry = inquiryWrapped.getInquiry();
+        if(inquiry != null && inquiry.getInquiryId() != null && !inquiry.getCustomerName().equals("")
+                && !inquiry.getDescription().equals("")  && inquiry.getCreateDate() != null && inquiry.getTopic() != null)
         {
-            inquiryService.update(inquiry);
+            Inquiry inquiryUpdated = inquiryService.update(inquiry);
+            Map<String, String> attributeMap = inquiryWrapped.getAttributeMap();
             List<AttributeOfInquiry> attributeList = attributeOfInquiryService.getAttributeAllById(inquiryId);
-            for(Map.Entry<String, String> entry : attributeMap.entrySet())
+            if(attributeList != null && attributeMap != null)
             {
-                if(entry.getKey().contains("attributeMap"))
+                for(Map.Entry<String, String> entry : attributeMap.entrySet())
                 {
                     for(AttributeOfInquiry a : attributeList)
                     {
-                        if(entry.getKey().contains(a.getAttributeName()))
-                        {
-                            a.setAttributeValue(entry.getValue());
-                            attributeOfInquiryService.update(a);
-                            attributeList.remove(a);
-                            break;
-                        }
+                        a.setAttributeName(entry.getKey());
+                        a.setAttributeValue(entry.getValue());
+                        attributeOfInquiryService.update(a);
+                        attributeList.remove(a);
+                        break;
                     }
                 }
             }
+            return inquiryUpdated;
         }
-        inquiry = inquiryService.getInquiryById(inquiryId);
-        attributeMap = attributeOfInquiryService.getAttributeMapById(inquiryId);
-        List<Topic> topicList = topicService.getTopicAll();
-        ModelAndView mav = new ModelAndView("inquiryUpdateForm");
-        mav.addObject("topicList", topicList);
-        mav.addObject("inquiry", inquiry);
-        mav.addObject("attributeMap", attributeMap);
-
-        return mav;
+        else
+        {
+            return null;
+        }
     }
+
+    @RequestMapping(value = "/customers/{customerName}/inquiries", method = RequestMethod.GET)
+    public @ResponseBody List<Inquiry> getCustomerInquiries(@PathVariable String customerName) throws Exception
+    {
+        if(customerName != null)
+        {
+            List<Inquiry> inquiryList = inquiryService.getInquiryAll();
+            List<Inquiry> filteredList = new ArrayList<>();
+
+            for(Inquiry i : inquiryList)
+            {
+                if(i.getCustomerName().equals(customerName))
+                {
+                    filteredList.add(i);
+                }
+            }
+            return filteredList;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    @RequestMapping(value =  "/customers/{customerName}/inquiries/{inquiryId}", method = RequestMethod.GET )
+    public @ResponseBody InquiryWrapper getCustomerInquiry(@PathVariable int inquiryId) throws Exception
+    {
+        Inquiry inquiry = inquiryService.getInquiryById(inquiryId);
+        if(inquiry != null)
+        {
+            InquiryWrapper inquiryWrapped = new InquiryWrapper();
+            inquiryWrapped.setInquiry(inquiry);
+            Map<String, String> attributeMap = attributeOfInquiryService.getAttributeMapById(inquiryId);
+            if(attributeMap != null)
+            {
+                inquiryWrapped.setAttributeMap(attributeMap);
+            }
+            return inquiryWrapped;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
 
     /*@InitBinder
     public void initBinder(WebDataBinder binder)

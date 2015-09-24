@@ -46,14 +46,17 @@ public class InquiryDaoImpl implements InquiryDao
     }
 
     @Override
-    public void update(Inquiry inquiry) throws DaoException
+    public Inquiry update(Inquiry inquiry) throws DaoException
     {
         try
         {
             session = sessionFactory.openSession();
             session.beginTransaction();
             session.update(inquiry);
+            session.flush();
+            inquiry = (Inquiry) session.load(Inquiry.class, inquiry.getInquiryId());
             session.getTransaction().commit();
+            return inquiry;
         }
         catch(Exception e)
         {

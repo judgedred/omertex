@@ -76,8 +76,7 @@ public class InquiryDaoTest extends TestCase
         String customerNameExpected = inquiry.getCustomerName();
         String createDateExpected = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(inquiry.getCreateDate());
         Topic topicExpected = inquiry.getTopic();
-        inquiryDao.update(inquiry);
-        Inquiry inquiryTest = inquiryDao.getInquiryById(inquiry.getInquiryId());
+        Inquiry inquiryTest = inquiryDao.update(inquiry);
         Assert.assertNotNull(inquiryTest);
         String descriptionResult = inquiryTest.getDescription();
         String customerNameResult = inquiryTest.getCustomerName();

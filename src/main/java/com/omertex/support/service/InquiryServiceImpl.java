@@ -21,9 +21,9 @@ public class InquiryServiceImpl implements InquiryService
     }
 
     @Override
-    public void update(Inquiry inquiry) throws DaoException
+    public Inquiry update(Inquiry inquiry) throws DaoException
     {
-        inquiryDao.update(inquiry);
+        return inquiryDao.update(inquiry);
     }
 
     @Override
