@@ -2,6 +2,8 @@ package com.omertex.support.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.DateSerializer;
+import com.omertex.support.web.JsonDateSerializer;
+
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -20,7 +22,7 @@ public class Inquiry
     private String description;
 
     @Column(name = "create_date")
-    @JsonSerialize(using=DateSerializer.class)
+    @JsonSerialize(using = JsonDateSerializer.class)
     private Date createDate;
 
     @Column(name = "customer_name")

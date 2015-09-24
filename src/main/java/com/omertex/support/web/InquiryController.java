@@ -49,7 +49,7 @@ public class InquiryController
     }
 
     @RequestMapping(value = "customers/{customerName}/inquiries/{inquiryId}", method = RequestMethod.DELETE)
-    public ModelAndView deleteInquiry(@PathVariable Integer inquiryId, String customerName, HttpServletResponse response) throws Exception
+    public ModelAndView deleteInquiry(@PathVariable Integer inquiryId, HttpServletResponse response) throws Exception
     {
         try
         {
@@ -78,49 +78,29 @@ public class InquiryController
     }
 
     @RequestMapping(value = "/customers/{customerName}/inquiries", method = RequestMethod.POST)
-    @ResponseBody
-    public Inquiry addInquiry(@RequestBody Inquiry inquiry,
-                                 BindingResult result,
-                                 @RequestParam MultiValueMap<String, String> params) throws Exception
+    public @ResponseBody Inquiry addInquiry(@RequestBody InquiryWrapper inquiryWrapped, BindingResult result) throws Exception
     {
         if(result.hasErrors())
         {
-
+            System.out.println(result.getAllErrors());
         }
+        Inquiry inquiry = inquiryWrapped.getInquiry();
         if(inquiry != null && !inquiry.getCustomerName().equals("") && !inquiry.getDescription().equals(""))
         {
             Inquiry inquiryCreated = inquiryService.create(inquiry);
-            AttributeOfInquiry attribute;
-            List<AttributeOfInquiry> attributeList = new LinkedList<>();
-            for(Map.Entry<String, List<String>> entry : params.entrySet())
+            Map<String, String> params = inquiryWrapped.getAttributeMap();
+            for(Map.Entry<String, String> entry : params.entrySet())
             {
-                if(entry.getKey().equals("attributeName"))
-                {
-                    for(String s : entry.getValue())
-                    {
-                        attribute = new AttributeOfInquiry();
-                        attribute.setAttributeName(s);
-                        attributeList.add(attribute);
-                    }
-                }
-                else if(entry.getKey().equals("attributeValue"))
-                {
-                    for(String s : entry.getValue())
-                    {
-                        for(AttributeOfInquiry a : attributeList)
-                        {
-                            a.setAttributeValue(s);
-                            a.setInquiry(inquiryCreated);
-                            attributeOfInquiryService.create(a);
-                            attributeList.remove(a);
-                            break;
-                        }
-                    }
-                }
+                AttributeOfInquiry attribute = new AttributeOfInquiry();
+                attribute.setInquiry(inquiryCreated);
+                attribute.setAttributeName(entry.getKey());
+                attribute.setAttributeValue(entry.getValue());
+                attributeOfInquiryService.create(attribute);
             }
+            return inquiryCreated;
         }
 
-        return inquiry;
+        return null;
     }
 
     @RequestMapping("/inquiryAddForm/{customerName}")
@@ -177,11 +157,11 @@ public class InquiryController
         return mav;
     }
 
-    @InitBinder
+    /*@InitBinder
     public void initBinder(WebDataBinder binder)
     {
         binder.registerCustomEditor(Date.class,
                 new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd HH:mm"), true));
         binder.registerCustomEditor(Topic.class, new TopicEditor());
-    }
+    }*/
 }
