@@ -63,13 +63,16 @@ public class InquiryController
         {
             Inquiry inquiryCreated = inquiryService.create(inquiry);
             Map<String, String> attributeMap = inquiryWrapped.getAttributeMap();
-            for(Map.Entry<String, String> entry : attributeMap.entrySet())
+            if(attributeMap != null)
             {
-                AttributeOfInquiry attribute = new AttributeOfInquiry();
-                attribute.setInquiry(inquiryCreated);
-                attribute.setAttributeName(entry.getKey());
-                attribute.setAttributeValue(entry.getValue());
-                attributeOfInquiryService.create(attribute);
+                for(Map.Entry<String, String> entry : attributeMap.entrySet())
+                {
+                    AttributeOfInquiry attribute = new AttributeOfInquiry();
+                    attribute.setInquiry(inquiryCreated);
+                    attribute.setAttributeName(entry.getKey());
+                    attribute.setAttributeValue(entry.getValue());
+                    attributeOfInquiryService.create(attribute);
+                }
             }
             return inquiryCreated;
         }

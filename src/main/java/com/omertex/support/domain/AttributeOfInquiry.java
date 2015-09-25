@@ -68,4 +68,44 @@ public class AttributeOfInquiry
     {
         this.inquiry = inquiry;
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if(this == o)
+        {
+            return true;
+        }
+        if(o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+
+        AttributeOfInquiry that = (AttributeOfInquiry) o;
+
+        if(attributeId != null ? !attributeId.equals(that.attributeId) : that.attributeId != null)
+        {
+            return false;
+        }
+        if(attributeName != null ? !attributeName.equals(that.attributeName) : that.attributeName != null)
+        {
+            return false;
+        }
+        if(attributeValue != null ? !attributeValue.equals(that.attributeValue) : that.attributeValue != null)
+        {
+            return false;
+        }
+        return !(inquiry != null ? !inquiry.equals(that.inquiry) : that.inquiry != null);
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = attributeId != null ? attributeId.hashCode() : 0;
+        result = 31 * result + (attributeName != null ? attributeName.hashCode() : 0);
+        result = 31 * result + (attributeValue != null ? attributeValue.hashCode() : 0);
+        result = 31 * result + (inquiry != null ? inquiry.hashCode() : 0);
+        return result;
+    }
 }
