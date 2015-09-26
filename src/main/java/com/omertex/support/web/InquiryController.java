@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -23,7 +21,7 @@ public class InquiryController
     private AttributeOfInquiryService attributeOfInquiryService;
 
 
-    @RequestMapping(value = "customers/{customerName}/inquiries/{inquiryId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/customers/{customerName}/inquiries/{inquiryId}", method = RequestMethod.DELETE)
     public void deleteInquiry(@PathVariable Integer inquiryId, HttpServletResponse response) throws Exception
     {
         try
@@ -31,32 +29,21 @@ public class InquiryController
             Inquiry inquiry = inquiryService.getInquiryById(inquiryId);
             if(inquiry != null)
             {
-                List<AttributeOfInquiry> attributeList = attributeOfInquiryService.getAttributeAll();
-                for(AttributeOfInquiry a : attributeList)
-                {
-                    if(a.getInquiry().getInquiryId().equals(inquiryId))
-                    {
-                        attributeOfInquiryService.delete(a);
-                    }
-                }
                 inquiryService.delete(inquiry);
+                response.setStatus(HttpServletResponse.SC_OK);
             }
-            response.setStatus(HttpServletResponse.SC_OK);
         }
         catch(Exception e)
         {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             e.printStackTrace();
         }
+
     }
 
     @RequestMapping(value = "/customers/{customerName}/inquiries", method = RequestMethod.POST)
-    public @ResponseBody Inquiry addInquiry(@RequestBody InquiryWrapper inquiryWrapped, BindingResult result) throws Exception
+    public @ResponseBody InquiryWrapper addInquiry(@RequestBody InquiryWrapper inquiryWrapped) throws Exception
     {
-        if(result.hasErrors())
-        {
-            System.out.println(result.getAllErrors());
-        }
         Inquiry inquiry = inquiryWrapped.getInquiry();
         if(inquiry != null && !inquiry.getCustomerName().equals("") && !inquiry.getDescription().equals("")
                 && inquiry.getCreateDate() != null && inquiry.getTopic() != null)
@@ -73,8 +60,11 @@ public class InquiryController
                     attribute.setAttributeValue(entry.getValue());
                     attributeOfInquiryService.create(attribute);
                 }
+                attributeMap = attributeOfInquiryService.getAttributeMapById(inquiryCreated.getInquiryId());
+                inquiryWrapped.setAttributeMap(attributeMap);
             }
-            return inquiryCreated;
+            inquiryWrapped.setInquiry(inquiryCreated);
+            return inquiryWrapped;
         }
         else
         {
@@ -83,14 +73,9 @@ public class InquiryController
     }
 
     @RequestMapping(value = "/customers/{customerName}/inquiries/{inquiryId}", method = RequestMethod.PUT)
-    public @ResponseBody Inquiry updateInquiry(@PathVariable Integer inquiryId,
-                                               @RequestBody InquiryWrapper inquiryWrapped,
-                                               BindingResult result) throws Exception
+    public @ResponseBody InquiryWrapper updateInquiry(@PathVariable Integer inquiryId,
+                                               @RequestBody InquiryWrapper inquiryWrapped) throws Exception
     {
-        if(result.hasErrors())
-        {
-
-        }
         Inquiry inquiry = inquiryWrapped.getInquiry();
         if(inquiry != null && inquiry.getInquiryId() != null && !inquiry.getCustomerName().equals("")
                 && !inquiry.getDescription().equals("")  && inquiry.getCreateDate() != null && inquiry.getTopic() != null)
@@ -111,8 +96,11 @@ public class InquiryController
                         break;
                     }
                 }
+                attributeMap = attributeOfInquiryService.getAttributeMapById(inquiryUpdated.getInquiryId());
+                inquiryWrapped.setAttributeMap(attributeMap);
             }
-            return inquiryUpdated;
+            inquiryWrapped.setInquiry(inquiryUpdated);
+            return inquiryWrapped;
         }
         else
         {

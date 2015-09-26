@@ -1,7 +1,9 @@
 package com.omertex.support.service;
 
+import com.omertex.support.dao.AttributeOfInquiryDao;
 import com.omertex.support.dao.DaoException;
 import com.omertex.support.dao.InquiryDao;
+import com.omertex.support.domain.AttributeOfInquiry;
 import com.omertex.support.domain.Inquiry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,9 @@ public class InquiryServiceImpl implements InquiryService
 {
     @Autowired
     private InquiryDao inquiryDao;
+
+    @Autowired
+    private AttributeOfInquiryDao attributeOfInquiryDao;
 
     @Override
     public Inquiry create(Inquiry inquiry) throws DaoException
@@ -29,6 +34,17 @@ public class InquiryServiceImpl implements InquiryService
     @Override
     public void delete(Inquiry inquiry) throws DaoException
     {
+        List<AttributeOfInquiry> attributeList = attributeOfInquiryDao.getAttributeAll();
+        if(attributeList != null)
+        {
+            for(AttributeOfInquiry a : attributeList)
+            {
+                if(a.getInquiry().equals(inquiry))
+                {
+                    attributeOfInquiryDao.delete(a);
+                }
+            }
+        }
         inquiryDao.delete(inquiry);
     }
 
