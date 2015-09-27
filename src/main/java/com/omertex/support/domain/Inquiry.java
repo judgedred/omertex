@@ -2,10 +2,8 @@ package com.omertex.support.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 import com.omertex.support.web.JsonDateDeserializer;
 import com.omertex.support.web.JsonDateSerializer;
-
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;

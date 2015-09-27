@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `support`.`Topic` (
 ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `support`.`Inquiry` (
   `inquiry_id` INT NOT NULL AUTO_INCREMENT,
-  `description` VARCHAR(45) NOT NULL,
+  `description` VARCHAR(100) NOT NULL,
   `create_date` TIMESTAMP(0) NOT NULL DEFAULT Now(),
   `customer_name` VARCHAR(45) NOT NULL,
   `topic_id` INT NOT NULL,

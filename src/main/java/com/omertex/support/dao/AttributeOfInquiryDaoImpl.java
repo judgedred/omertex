@@ -1,13 +1,10 @@
 package com.omertex.support.dao;
 
-
 import com.omertex.support.domain.AttributeOfInquiry;
-import com.omertex.support.domain.Inquiry;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.math.BigInteger;
 import java.util.List;
 
@@ -122,7 +119,6 @@ public class AttributeOfInquiryDaoImpl implements AttributeOfInquiryDao
         try
         {
             session = sessionFactory.openSession();
-            session.beginTransaction();
             AttributeOfInquiry attribute = (AttributeOfInquiry)session.get(AttributeOfInquiry.class, id);
             if(attribute != null)
             {

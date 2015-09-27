@@ -1,6 +1,5 @@
 package com.omertex.support.dao;
 
-
 import com.omertex.support.domain.AttributeOfInquiry;
 
 import java.util.List;

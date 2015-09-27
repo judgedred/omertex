@@ -1,8 +1,6 @@
 package com.omertex.support.web;
 
-
 import com.omertex.support.domain.Inquiry;
-
 import java.util.Map;
 
 public class InquiryWrapper

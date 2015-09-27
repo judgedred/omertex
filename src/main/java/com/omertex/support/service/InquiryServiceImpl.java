@@ -7,7 +7,6 @@ import com.omertex.support.domain.AttributeOfInquiry;
 import com.omertex.support.domain.Inquiry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service

@@ -1,12 +1,10 @@
 package com.omertex.support.service;
 
-
 import com.omertex.support.dao.AttributeOfInquiryDao;
 import com.omertex.support.dao.DaoException;
 import com.omertex.support.domain.AttributeOfInquiry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service

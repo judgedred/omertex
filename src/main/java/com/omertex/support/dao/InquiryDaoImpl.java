@@ -5,7 +5,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.math.BigInteger;
 import java.util.List;
 
@@ -124,7 +123,6 @@ public class InquiryDaoImpl implements InquiryDao
         try
         {
             session = sessionFactory.openSession();
-            session.beginTransaction();
             Inquiry inquiry = (Inquiry)session.get(Inquiry.class, id);
             if(inquiry != null)
             {

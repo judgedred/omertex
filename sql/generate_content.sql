@@ -9,7 +9,7 @@ Insert Into Inquiry(customer_name, topic_id, create_date, description) Values ("
 Insert Into Inquiry(customer_name, topic_id, create_date, description) Values ("Тест", 2, "2015-09-21", "Тестовое обращение");
 Insert Into Inquiry(customer_name, topic_id, create_date, description) Values ("Тест", 4, "2015-09-21", "Тестовое обращение");
 Insert Into AttributeOfInquiry(attribute_name, attribute_value, inquiry_id) Values ("Город", "Борисов", 1);
-Insert Into AttributeOfInquiry(attribute_name, attribute_value, inquiry_id) Values ("Тест", "Тест", 1);
-Insert Into AttributeOfInquiry(attribute_name, attribute_value, inquiry_id) Values ("Тест", "Тест", 1);
-Insert Into AttributeOfInquiry(attribute_name, attribute_value, inquiry_id) Values ("Тест", "Тест", 4);
-Insert Into AttributeOfInquiry(attribute_name, attribute_value, inquiry_id) Values ("Тест2", "Тест2", 4);
+Insert Into AttributeOfInquiry(attribute_name, attribute_value, inquiry_id) Values ("Атрибут1", "Значение1", 1);
+Insert Into AttributeOfInquiry(attribute_name, attribute_value, inquiry_id) Values ("Атрибут2", "Значение2", 1);
+Insert Into AttributeOfInquiry(attribute_name, attribute_value, inquiry_id) Values ("Атрибут1", "Значение1", 4);
+Insert Into AttributeOfInquiry(attribute_name, attribute_value, inquiry_id) Values ("Атрибут2", "Значение2", 4);
