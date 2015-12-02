@@ -174,7 +174,7 @@ public class InquiryControllerTest extends TestCase
     public void getCustomerInquiryTest() throws IOException, DaoException
     {
         Inquiry inquiry = inquiryService.getInquiryById(1);
-        Map<String, String> attributeMap = attributeOfInquiryService.getAttributeMapById(inquiry.getInquiryId());
+        Map<String, String> attributeMap = attributeOfInquiryService.getInquiryAttributeMap(inquiry.getInquiryId());
         int idExpected = inquiry.getInquiryId();
         String customerNameExpected = inquiry.getCustomerName();
         Topic topicExpected = inquiry.getTopic();

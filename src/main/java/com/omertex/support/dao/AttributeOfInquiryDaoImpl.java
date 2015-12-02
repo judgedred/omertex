@@ -3,6 +3,7 @@ package com.omertex.support.dao;
 import com.omertex.support.domain.AttributeOfInquiry;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import java.math.BigInteger;
@@ -99,6 +100,35 @@ public class AttributeOfInquiryDaoImpl implements AttributeOfInquiryDao
         {
             session = sessionFactory.openSession();
             return (List<AttributeOfInquiry>) session.createCriteria(AttributeOfInquiry.class).list();
+        }
+        catch(Exception e)
+        {
+            throw new DaoException(e);
+        }
+        finally
+        {
+            if(session != null && session.isOpen())
+            {
+                session.close();
+            }
+        }
+    }
+
+    @Override
+    public List<AttributeOfInquiry> getInquiryAttributeAll(int inquiryId) throws DaoException
+    {
+        try
+        {
+            session = sessionFactory.openSession();
+            List<AttributeOfInquiry> resultList = (List<AttributeOfInquiry>) session.createCriteria(AttributeOfInquiry.class).add(Restrictions.eq("inquiry.inquiryId", inquiryId)).list();
+            if(!resultList.isEmpty())
+            {
+                return resultList;
+            }
+            else
+            {
+                return null;
+            }
         }
         catch(Exception e)
         {

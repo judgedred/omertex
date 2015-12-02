@@ -10,5 +10,6 @@ public interface AttributeOfInquiryDao
     public void update(AttributeOfInquiry attribute) throws DaoException;
     public void delete(AttributeOfInquiry attribute) throws DaoException;
     public List<AttributeOfInquiry> getAttributeAll() throws DaoException;
+    public List<AttributeOfInquiry> getInquiryAttributeAll(int inquiryId) throws DaoException;
     public AttributeOfInquiry getAttributeById(int id) throws DaoException;
 }

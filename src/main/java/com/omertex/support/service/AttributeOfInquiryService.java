@@ -12,7 +12,6 @@ public interface AttributeOfInquiryService
     public AttributeOfInquiry create(AttributeOfInquiry attribute) throws DaoException;
     public void update(AttributeOfInquiry attribute) throws DaoException;
     public void delete(AttributeOfInquiry attribute) throws DaoException;
-    public List<AttributeOfInquiry> getAttributeAll() throws DaoException;
-    public Map<String, String> getAttributeMapById(int inquiryId) throws DaoException;
-    public List<AttributeOfInquiry> getAttributeAllById(int inquiryId) throws DaoException;
+    public Map<String, String> getInquiryAttributeMap(int inquiryId) throws DaoException;
+    public List<AttributeOfInquiry> getInquiryAttributeAll(int inquiryId) throws DaoException;
 }

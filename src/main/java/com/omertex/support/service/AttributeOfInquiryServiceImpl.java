@@ -32,24 +32,15 @@ public class AttributeOfInquiryServiceImpl implements AttributeOfInquiryService
     }
 
     @Override
-    public List<AttributeOfInquiry> getAttributeAll() throws DaoException
+    public Map<String, String> getInquiryAttributeMap(int inquiryId) throws DaoException
     {
-        return attributeOfInquiryDao.getAttributeAll();
-    }
-
-    @Override
-    public Map<String, String> getAttributeMapById(int inquiryId) throws DaoException
-    {
-        List<AttributeOfInquiry> attributeList = attributeOfInquiryDao.getAttributeAll();
+        List<AttributeOfInquiry> attributeList = attributeOfInquiryDao.getInquiryAttributeAll(inquiryId);
         Map<String, String> attributeMap = new HashMap<>();
         if(attributeList != null)
         {
             for(AttributeOfInquiry a : attributeList)
             {
-                if(a.getInquiry().getInquiryId().equals(inquiryId))
-                {
-                    attributeMap.put(a.getAttributeName(), a.getAttributeValue());
-                }
+                attributeMap.put(a.getAttributeName(), a.getAttributeValue());
             }
             return attributeMap;
         }
@@ -60,24 +51,8 @@ public class AttributeOfInquiryServiceImpl implements AttributeOfInquiryService
     }
 
     @Override
-    public List<AttributeOfInquiry> getAttributeAllById(int inquiryId) throws DaoException
+    public List<AttributeOfInquiry> getInquiryAttributeAll(int inquiryId) throws DaoException
     {
-        List<AttributeOfInquiry> attributeList = attributeOfInquiryDao.getAttributeAll();
-        List<AttributeOfInquiry> filteredAttributeList = new ArrayList<>();
-        if(attributeList != null)
-        {
-            for(AttributeOfInquiry a : attributeList)
-            {
-                if(a.getInquiry().getInquiryId() == inquiryId)
-                {
-                    filteredAttributeList.add(a);
-                }
-            }
-            return filteredAttributeList;
-        }
-        else
-        {
-            return null;
-        }
+        return attributeOfInquiryDao.getInquiryAttributeAll(inquiryId);
     }
 }

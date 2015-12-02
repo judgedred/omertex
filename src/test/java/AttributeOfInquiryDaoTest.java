@@ -84,11 +84,19 @@ public class AttributeOfInquiryDaoTest extends TestCase
     }
 
     @Test
-    public void testGetInquiryAll() throws DaoException
+    public void testGetAttributeAll() throws DaoException
     {
         List<AttributeOfInquiry> listAttributeTest = attributeOfInquiryDao.getAttributeAll();
         Assert.assertNotNull(listAttributeTest);
         Assert.assertTrue(listAttributeTest.size() > 0);
+    }
+
+    @Test
+    public void testGetInquiryAttributeAll() throws DaoException
+    {
+        List<AttributeOfInquiry> testList = attributeOfInquiryDao.getInquiryAttributeAll(1);
+        Assert.assertNotNull(testList);
+        Assert.assertTrue(testList.size() == 3);
     }
 
     @After

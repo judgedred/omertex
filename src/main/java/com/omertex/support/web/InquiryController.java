@@ -59,7 +59,7 @@ public class InquiryController
                     attribute.setAttributeValue(entry.getValue());
                     attributeOfInquiryService.create(attribute);
                 }
-                attributeMap = attributeOfInquiryService.getAttributeMapById(inquiryCreated.getInquiryId());
+                attributeMap = attributeOfInquiryService.getInquiryAttributeMap(inquiryCreated.getInquiryId());
                 inquiryWrapped.setAttributeMap(attributeMap);
             }
             inquiryWrapped.setInquiry(inquiryCreated);
@@ -81,7 +81,7 @@ public class InquiryController
         {
             Inquiry inquiryUpdated = inquiryService.update(inquiry);
             Map<String, String> attributeMap = inquiryWrapped.getAttributeMap();
-            List<AttributeOfInquiry> attributeList = attributeOfInquiryService.getAttributeAllById(inquiryId);
+            List<AttributeOfInquiry> attributeList = attributeOfInquiryService.getInquiryAttributeAll(inquiryId);
             if(attributeList != null && attributeMap != null)
             {
                 for(Map.Entry<String, String> entry : attributeMap.entrySet())
@@ -95,7 +95,7 @@ public class InquiryController
                         break;
                     }
                 }
-                attributeMap = attributeOfInquiryService.getAttributeMapById(inquiryUpdated.getInquiryId());
+                attributeMap = attributeOfInquiryService.getInquiryAttributeMap(inquiryUpdated.getInquiryId());
                 inquiryWrapped.setAttributeMap(attributeMap);
             }
             inquiryWrapped.setInquiry(inquiryUpdated);
@@ -138,7 +138,7 @@ public class InquiryController
         {
             InquiryWrapper inquiryWrapped = new InquiryWrapper();
             inquiryWrapped.setInquiry(inquiry);
-            Map<String, String> attributeMap = attributeOfInquiryService.getAttributeMapById(inquiryId);
+            Map<String, String> attributeMap = attributeOfInquiryService.getInquiryAttributeMap(inquiryId);
             if(attributeMap != null)
             {
                 inquiryWrapped.setAttributeMap(attributeMap);
