@@ -26,8 +26,6 @@ public class AttributeOfInquiryDaoImpl implements AttributeOfInquiryDao
             session.beginTransaction();
             session.save(attribute);
             session.flush();
-            Integer lastId = ((BigInteger) session.createSQLQuery("Select last_insert_id()").uniqueResult()).intValue();
-            attribute = (AttributeOfInquiry) session.load(AttributeOfInquiry.class, lastId);
             session.getTransaction().commit();
             return attribute;
         }

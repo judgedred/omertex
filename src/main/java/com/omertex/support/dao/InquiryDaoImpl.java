@@ -25,8 +25,6 @@ public class InquiryDaoImpl implements InquiryDao
             session.beginTransaction();
             session.save(inquiry);
             session.flush();
-            Integer lastId = ((BigInteger) session.createSQLQuery("Select last_insert_id()").uniqueResult()).intValue();
-            inquiry = (Inquiry) session.load(Inquiry.class, lastId);
             session.getTransaction().commit();
             return inquiry;
         }
